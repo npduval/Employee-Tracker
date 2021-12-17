@@ -79,5 +79,12 @@ const initialQ = () => {
   })
 };
 
+allEmployees = () => {
+  db.query('SELECT * FROM employees', function (err, results) {
+    if (err) throw err;
+    console.table(results);
+    // restart();
+  })
+};
 
 initialQ();

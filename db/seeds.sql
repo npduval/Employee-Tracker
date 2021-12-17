@@ -3,7 +3,7 @@ use employees_db;
 INSERT INTO department (department_name) VALUES
 ('Customer Service'),
 ('Sales'),
-('Finance')
+('Finance'),
 ('Engineering');
 
 
@@ -17,11 +17,11 @@ INSERT INTO job (job_title, salary, department_id) VALUES
 
 
 INSERT INTO employees (first_name, last_name, manager_id, job_id) VALUES
-('Micheal', 'Richards', 34, 2 )
-('Sean', 'Wright', 21, 1 )
-('Charles', 'Brown', 46, 4 )
-('John', 'Kirby', 15, 3 )
-('Sarah', 'Light', 02, 3 )
-('Tina', 'Godwin', 42, 4 )
-('Lizz', 'Ruby', 16, 6 )
-('Kenny', 'Fothergill', 91, 5 )
+('Micheal', 'Richards', 34, 2 ),
+('Sean', 'Wright', 21, 1 ),
+('Charles', 'Brown', 46, 4 ),
+('John', 'Kirby', 15, 3 ),
+('Sarah', 'Light', 02, 3 ),
+('Tina', 'Godwin', 42, 4 ),
+('Lizz', 'Ruby', 16, 1 ),
+('Kenny', 'Fothergill', 91, 5 );

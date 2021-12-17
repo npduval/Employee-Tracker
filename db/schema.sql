@@ -15,17 +15,15 @@ CREATE TABLE job (
     department_id INT NOT NULL,
     FOREIGN KEY (department_id)
     REFERENCES department(id)
-    ON DELETE SET NULL
 );
 
 CREATE TABLE employees (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(50) NOT NULL,
   last_name VARCHAR(50) NOT NULL,
-  manager_id INT
-  job_id INT NOT NULL
+  manager_id INT,
+  job_id INT NOT NULL,
   FOREIGN KEY (job_id)
   REFERENCES job(id)
-  ON DELETE SET NULL
 
 );
