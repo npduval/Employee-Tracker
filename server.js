@@ -171,11 +171,14 @@ addEmployee = async () => {
     .then(response=> { 
       const { employee_first, employee_last, employee_job, employee_mgr } = response;
 
+      // currently getting error undefined in job_id value - need to chain .thens and make job_id global?
+
    db.query(`SELECT id FROM job WHERE job_title = ?` , employee_job, function (err, jobId) {
         if (err) throw err;
          console.log(jobId);
+         const {job_id} = jobId;
              
-   db.query(`INSERT into employees (first_name, last_name, manager_id, job_id) VALUES (${employee_first}, ${employee_last}, ${employee_mgr}, ${jobId})` , function (err, results) {
+   db.query(`INSERT into employees (first_name, last_name, manager_id, job_id) VALUES (${employee_first}, ${employee_last}, ${employee_mgr}, ${job_id})` , function (err, results) {
       if (err) throw err;
       console.log('Employee added to Database' + results)
           }
