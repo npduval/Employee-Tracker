@@ -3,9 +3,10 @@ const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
 
+
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const db = mysql.createConnection(
@@ -34,34 +35,49 @@ const initialQ = () => {
                 "Add Department",
                 "Quit"
                 ]
-            },
+            }
             
         ])
 
-    .then((responce) => {
-        const { choices } = responce;
-        //TODO if else or switch stament for all options to detemine next steps
-        if (choices === "View All Employees") {
+    .then(response => {
+      const { inital } = response;
+
+      switch (inital) {
+      
+        case "View All Employees":
             allEmployees();
-        }
-        if (choices === "Add Employee") {
+            break;
+        
+        case "Add Employee":
             addEmployee();
-        }
-        if (choices === "Update Employee Role") {
+            break;
+        
+        case "Update Employee Role":
             updateRole();
-          }
-        if (choices === "View All Roles") {
+            break;
+          
+        case "View All Roles":
             allRoles();
-          }
-        if (choices === "Add Role") {
+            break;
+          
+        case "Add Role":
             addRole();
-          }
-        if (choices === "View All Departments") {
+            break;
+          
+        case "View All Departments":
             allDepartments();
-        }
-        if (choices === "Add Department") {
+            break;
+        
+        case "Add Department":
             addDepartment();
-        }
+            break;
+          
+        default: 
+            restart();
  
-    })
-}
+    }
+  })
+};
+
+
+initialQ();
