@@ -19,6 +19,8 @@ const db = mysql.createConnection(
     console.log('Connected to the database')
   );
 
+  let employee =[];
+
 const initialQ = () => {
     inquirer.prompt([
             {
@@ -107,7 +109,7 @@ addEmployee = async () => {
 
   db.query('SELECT job_title FROM job',  await function (err, results) {
     if (err) throw err;
-    const rolesArray = results.map(({ job_title }) => ({ name: job_title }));
+    const rolesArray = results.map(({ job_title }) => (job_title ));
     // console.log(rolesArray);
     inquirer.prompt([
         {
@@ -170,21 +172,21 @@ addEmployee = async () => {
       ])
     .then(response=> { 
       const { employee_first, employee_last, employee_job, employee_mgr } = response;
-
-      // currently getting error undefined in job_id value - need to chain .thens and make job_id global?
-
-   db.query(`SELECT id FROM job WHERE job_title = ?` , employee_job, function (err, jobId) {
+      
+      db.query(`SELECT id FROM job WHERE job_title = ?` , employee_job, function (err, result) {
         if (err) throw err;
-         console.log(jobId);
-         const {job_id} = jobId;
+        const job_id = result.map(({ id }) => ( id ));
+        employee.push(employee_first, employee_last,  employee_mgr, job_id)
+
              
-   db.query(`INSERT into employees (first_name, last_name, manager_id, job_id) VALUES (${employee_first}, ${employee_last}, ${employee_mgr}, ${job_id})` , function (err, results) {
-      if (err) throw err;
-      console.log('Employee added to Database' + results)
-          }
-        )}
-      )}
-    )}
+      db.query(`INSERT into employees (first_name, last_name, manager_id, job_id) VALUES (?,?,?,?)` , employee, function (err, results) {
+        if (err) throw err;
+        console.log('Employee added to Database');
+        initialQ();
+            }
+         )}
+       )}
+     )}
   )};
 
 
