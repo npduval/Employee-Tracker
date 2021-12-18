@@ -190,4 +190,43 @@ addEmployee = async () => {
   )};
 
 
+
+   updateRole = () => {
+
+    db.query("SELECT id, first_name, last_name FROM employees", function (err, name) {
+      if (err) throw err;
+      const namesArray = name.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+
+    
+    db.query('SELECT job_title FROM job',  function (err, job) {
+      if (err) throw err;
+      const rolesArray = job.map(({ job_title }) => (job_title ));
+
+      inquirer.prompt([
+
+      {
+        type: 'list',
+        name: 'employee_id',
+        message: 'Which employee would you like to update?',
+        choices: namesArray
+      },
+      {
+        type: 'list',
+        name: 'new_role',
+        message: 'What is the employee\'s new role?',
+        choices: rolesArray
+      },
+
+      ])
+
+      .then(data => {
+          console.log(data);
+        // const { employee_name, new_role} = data;
+        // console.log(employee_name + new_role );
+        // db.query('UPDATE employee set job_id = ? WHERE id = ?', new_role )
+      })
+    })
+   })
+  };
+
 initialQ();
