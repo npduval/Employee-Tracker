@@ -1,6 +1,6 @@
 # Employee-Tracker
 
-Server application that interacts with the database to update and track a companies Employees , Jobs, and Departments
+Server application that interacts with the database to update and track a Company's Employees , Jobs, and Departments
 
 ![image](https://user-images.githubusercontent.com/87501948/150621151-e6232fe8-a72a-4232-8ae6-f6164feb50d7.png)
 
