@@ -2,24 +2,27 @@ const express = require('express');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
+const { response } = require('express');
 
 
-const app = express();
+//const app = express();
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+//app.use(express.urlencoded({ extended: false }));
+//app.use(express.json());
 
 const db = mysql.createConnection(
     {
       host: 'localhost',
       user: 'root',
-      password: '',
+      password: 'Bootcamp2022',
       database: 'employees_db'
     },
     console.log('Connected to the database')
   );
 
-  let employee =[];
+  let employee = [];
+  let upRole = [];
+  let createRole = [];
 
 const initialQ = () => {
     inquirer.prompt([
@@ -84,7 +87,7 @@ const initialQ = () => {
 allEmployees = () => {
   db.query('SELECT * FROM employees', function (err, results) {
     if (err) throw err;
-    cTable(results);
+    console.table(results);
     initialQ();
   })
 };
@@ -92,7 +95,7 @@ allEmployees = () => {
 allJobs = () => {
   db.query('SELECT * FROM job', function (err, results) {
     if (err) throw err;
-    cTable(results);
+    console.table(results);
     initialQ();
   })
 };
@@ -105,12 +108,12 @@ allDepartments = () => {
   })
 };
 
-addEmployee = async () => {
+addEmployee = () => {
 
-  db.query('SELECT job_title FROM job',  await function (err, results) {
+  db.query('SELECT job_title FROM job', function (err, results) {
     if (err) throw err;
     const rolesArray = results.map(({ job_title }) => (job_title ));
-    // console.log(rolesArray);
+ 
     inquirer.prompt([
         {
             type: 'input',
@@ -176,7 +179,7 @@ addEmployee = async () => {
       db.query(`SELECT id FROM job WHERE job_title = ?` , employee_job, function (err, result) {
         if (err) throw err;
         const job_id = result.map(({ id }) => ( id ));
-        employee.push(employee_first, employee_last,  employee_mgr, job_id)
+        employee.push(employee_first, employee_last,  employee_mgr, job_id);
 
              
       db.query(`INSERT into employees (first_name, last_name, manager_id, job_id) VALUES (?,?,?,?)` , employee, function (err, results) {
@@ -193,40 +196,101 @@ addEmployee = async () => {
 
    updateRole = () => {
 
-    db.query("SELECT id, first_name, last_name FROM employees", function (err, name) {
+    db.query("SELECT id FROM employees", function (err, name) {
       if (err) throw err;
-      const namesArray = name.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+    const namesArray = name.map(({ id }) => (id));
 
     
-    db.query('SELECT job_title FROM job',  function (err, job) {
+    db.query('SELECT id FROM job',  function (err, job) {
       if (err) throw err;
-      const rolesArray = job.map(({ job_title }) => (job_title ));
+      const rolesArray = job.map(({id}) => (id));
 
       inquirer.prompt([
 
       {
         type: 'list',
         name: 'employee_id',
-        message: 'Which employee would you like to update?',
+        message: 'Select the Employee ID for which you would like to update?',
         choices: namesArray
       },
       {
         type: 'list',
         name: 'new_role',
-        message: 'What is the employee\'s new role?',
+        message: 'What is the employee\'s new role ID?',
         choices: rolesArray
       },
 
       ])
 
       .then(data => {
-          console.log(data);
-        // const { employee_name, new_role} = data;
-        // console.log(employee_name + new_role );
-        // db.query('UPDATE employee set job_id = ? WHERE id = ?', new_role )
+      const { employee_id, new_role} = data;
+      upRole.push(new_role, employee_id);
+      
+      db.query('UPDATE employees set job_id = ? WHERE id = ?', role, function (err, result) {
+        if (err) throw err;
+        console.log('Employee role updated');
       })
     })
    })
-  };
+  })
+};
+
+addJob = () => {
+
+  db.query('SELECT id FROM department', function (err, results){
+    if (err) throw err;
+    const departments = results.map(({id}) => (id));
+
+
+  inquirer.prompt([
+        {
+        type: 'input',
+        name: 'job',
+        message: 'What is the name of the new role?',
+        validate: input => {
+          if  (input) {
+              return true; 
+          } else {
+            console.log ('Please enter the name of the new role')
+              return false;  
+          }}
+        },
+        {
+          type: 'number',
+          name: 'salary',
+          message: 'What is the salary of this new role?',
+          validate: input => {
+            if  (input) {
+                return true; 
+            } else {
+              console.log ('Please enter the name of the new role')
+                return false;  
+            }}
+        },
+        {
+          type: 'list',
+          name: 'dept',
+          message: 'What is the department ID for this new role?',
+          choices: departments
+        }
+    ])
+
+.then(response => {
+ const {job, salary, dept} = response;
+ createRole.push(job,salary,dept);
+
+
+ db.query('INSERT into job (job_title, salary, department_id) VALUES (?,?,?)', createRole,function (err, result) {
+  if (err) throw err;
+  console.log('Employee role updated'); 
+
+      })
+    })
+  })
+};
+
+
+
+
 
 initialQ();
