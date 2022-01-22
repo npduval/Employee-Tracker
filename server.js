@@ -23,6 +23,7 @@ const db = mysql.createConnection(
   let employee = [];
   let upRole = [];
   let createRole = [];
+  
 
 const initialQ = () => {
     inquirer.prompt([
@@ -76,6 +77,10 @@ const initialQ = () => {
         case "Add Department":
             addDepartment();
             break;
+
+        case "Quit":
+          process.exit();
+      
           
         default: 
           initialQ();
@@ -226,9 +231,10 @@ addEmployee = () => {
       const { employee_id, new_role} = data;
       upRole.push(new_role, employee_id);
       
-      db.query('UPDATE employees set job_id = ? WHERE id = ?', role, function (err, result) {
+      db.query('UPDATE employees set job_id = ? WHERE id = ?', upRole, function (err, result) {
         if (err) throw err;
         console.log('Employee role updated');
+        initialQ();
       })
     })
    })
@@ -282,11 +288,44 @@ addJob = () => {
 
  db.query('INSERT into job (job_title, salary, department_id) VALUES (?,?,?)', createRole,function (err, result) {
   if (err) throw err;
-  console.log('Employee role updated'); 
+  console.log('Employee role added to Database'); 
+  initialQ();
 
       })
     })
   })
+};
+
+addDepartment = () => {
+
+
+  inquirer.prompt([
+        {
+        type: 'input',
+        name: 'department',
+        message: 'What is the name of the new department?',
+        validate: input => {
+          if  (input) {
+              return true; 
+          } else {
+            console.log ('Please enter the name of the new department')
+              return false;  
+          }}
+        },
+
+    ])
+
+.then(response => {
+ const {department} = response;
+
+
+ db.query('INSERT into department (department_name) VALUES (?)', department,function (err, result) {
+  if (err) throw err;
+  console.log('Department added to Database'); 
+  initialQ();
+
+      })
+    })
 };
 
 
